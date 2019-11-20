@@ -13,13 +13,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Load Fragment in Activity
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fl_fragment, loadlistfragment)
         fragmentTransaction.commit()
 
     }
 
-
+    //Set Toolbar Title
     fun settoobarTitle(value: String) {
         supportActionBar!!.title = value
     }

@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.testlist.R
 
+//Create Progress
 fun getProgressDrawable(context: Context): CircularProgressDrawable {
     return CircularProgressDrawable(context).apply {
 
@@ -19,7 +20,7 @@ fun getProgressDrawable(context: Context): CircularProgressDrawable {
     }
 }
 
-
+//Load Image from Glide
 fun ImageView.loadimage(url: String?, progressDrawable: CircularProgressDrawable) {
     val options = RequestOptions().placeholder(progressDrawable)
         .error(R.mipmap.ic_launcher_round)
@@ -30,7 +31,7 @@ fun ImageView.loadimage(url: String?, progressDrawable: CircularProgressDrawable
         .into(this)
 }
 
-
+//Check Internet Connection
 @Suppress("DEPRECATION")
 fun isInternetAvailable(context: Context): Boolean {
     var result = false

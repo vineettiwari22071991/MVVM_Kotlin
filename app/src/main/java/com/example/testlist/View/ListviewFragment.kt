@@ -16,11 +16,12 @@ import com.example.testlist.Util.isInternetAvailable
 import com.example.testlist.Viewmodel.MainActivityviewModel
 import kotlinx.android.synthetic.main.listviewfragment.*
 
-class ListviewFragment : Fragment() {
+class ListviewFragment : Fragment(), ListviewAdapter.IListdata {
+
 
     lateinit var viewModel: MainActivityviewModel
 
-    private val listadapter = ListviewAdapter(arrayListOf())
+    private val listadapter = ListviewAdapter(arrayListOf(), this)
 
     lateinit var mparentActivity: MainActivity
 
@@ -39,18 +40,24 @@ class ListviewFragment : Fragment() {
 
         mparentActivity = activity as MainActivity
 
-        if (isInternetAvailable(mparentActivity))
+
+        //Check Internet Connection if true call server else call localDB
+        if (isInternetAvailable(mparentActivity)) {
             viewModel.refresh()
-        else
+        } else {
+            viewModel.getdataOffline()
             Toast.makeText(activity, getString(R.string.internet), Toast.LENGTH_SHORT).show()
+        }
 
-
+        //Pull to Refresh
         swipe.setOnRefreshListener {
             swipe.isRefreshing = false
-            if (isInternetAvailable(mparentActivity))
+            if (isInternetAvailable(mparentActivity)) {
                 viewModel.refresh()
-            else
+            } else {
+                viewModel.getdataOffline()
                 Toast.makeText(activity, getString(R.string.internet), Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -66,26 +73,35 @@ class ListviewFragment : Fragment() {
 
     fun ObserverViewmodel() {
 
+        //Get data from Obsever and set to RecyclerView
         viewModel.listdata.observe(this, Observer { Listdata: Listmodel? ->
             Listdata?.let {
                 swipe.visibility = View.VISIBLE
                 rv_list.visibility = View.VISIBLE
-                listadapter.updateList(Listdata.rows)
+                listadapter?.updateList(Listdata.rows)
                 mparentActivity.settoobarTitle(Listdata.title)
             }
         })
-
+        //Show Error Message
         viewModel.listerror.observe(this, Observer { isError: Boolean? ->
 
             isError?.let {
 
-                //  swipe.visibility = View.GONE
-                // rv_list.visibility = View.GONE
-                //Toast.makeText(this, "Something went Wrong...", Toast.LENGTH_SHORT).show()
+                progress.visibility = if (it) View.VISIBLE else View.GONE
+                {
+                    if (it) {
+                        swipe.visibility = View.GONE
+                        rv_list.visibility = View.GONE
+                        Toast.makeText(activity, "Something went Wrong...", Toast.LENGTH_SHORT)
+                            .show()
+
+                    }
+                }
+
 
             }
         })
-
+        //After Loading Complete
         viewModel.loading.observe(this, Observer { isLoading: Boolean? ->
 
             isLoading?.let {
@@ -100,5 +116,10 @@ class ListviewFragment : Fragment() {
             }
         })
 
+    }
+
+    override fun Showlistdata(title: String) {
+
+        Toast.makeText(activity, title, Toast.LENGTH_SHORT).show()
     }
 }

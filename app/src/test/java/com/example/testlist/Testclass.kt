@@ -17,7 +17,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.util.concurrent.Callable
@@ -45,6 +44,7 @@ class Testclass {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
+
     }
 
     @Test
